@@ -3,8 +3,18 @@
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 import logging
+import ast
+import csv
 import os
 import re
+
+### Dictionary ###
+""" Creates an empty dictionary and updates it with the data contained in 'database.csv' if the file exists """
+D = {}
+if os.path.exists('database.csv'):
+	with open('database.csv','r') as file:
+		for line in csv.reader(file):
+			D[int(line[0])] = ast.literal_eval(line[1])
 
 ### Enable logging ###
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)              # you will know when (and why) things don't work as expected
@@ -39,8 +49,18 @@ no_keyboard = ReplyKeyboardRemove()
 ### Command handler functions ###
 """ Definition of the functions associated with the command handlers """
 def start(update: Update, _: CallbackContext) -> None:
-   """Send a message when the command /start is issued."""
-   update.message.reply_text(text=welcome_msg, reply_markup=standard_keyboard)
+	"""Send a message when the command /start is issued."""
+	update.message.reply_text(text=welcome_msg, reply_markup=standard_keyboard)
+
+	"""Update dictionary."""
+	user = update.message.from_user
+	D[user.id] = {'firstname': user.first_name, 'lastname': user.last_name, 'username': user.username}
+
+	"""Update CSV file."""
+	file = open("database.csv", "w")
+	for key, value in D.items():
+		csv.writer(file).writerow([key, value])
+	file.close()
 
 def help_command(update: Update, _: CallbackContext) -> None:
 	"""Send a message when the command /help is issued."""
@@ -78,8 +98,8 @@ def reply_barcode(update: Update, _: CallbackContext) -> int:
 	"""Sends a message in response to the barcode"""
 	#user = update.message.from_user
 	photo_file = update.message.photo[-1].get_file()
-	photo_file.download('user_codice.jpg')
-	#logger.info("Codice of %s: %s", user.first_name, 'user_photo.jpg')
+	photo_file.download('user_code.jpg')
+	#logger.info("Codice of %s: %s", user.first_name, 'user_code.jpg')
 	update.message.reply_text(text=easter_barcode_msg, reply_markup=yesno_keyboard)
 	return ANSWER
 
