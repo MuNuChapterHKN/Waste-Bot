@@ -19,6 +19,8 @@ TOKEN = os.environ['TOKEN']
 
 PHOTOCODE, ANSWER = range(2)
 
+TRACKING = 50
+
 ### Messages ###
 ask_barcode_msg = 'Perfetto! Inviami la foto del CODICE a barre. Premi "Annulla" se vuoi interrompere la conversazione.'
 ask_photo_msg = 'Perfetto! Inviami la FOTO dell\'oggetto. Premi "Annulla" se vuoi interrompere la conversazione.'
@@ -33,6 +35,7 @@ unknown_command_msg = 'Mi dispiace, questo non è un comando supportato.'
 unknown_message_msg = 'Mi dispiace, questa non è una risposta supportata al momento.'
 waste_it_msg = 'Yeah! Allora buttalo nell\'indifferenziato, a presto!'
 welcome_msg = 'Benvenuto nel Waste-Bot!\nCome vuoi riconoscere l\'oggetto?'
+tracking_msg = 'Do you want to be tracked?'
 
 ### Keyboards ###
 standard_keyboard = ReplyKeyboardMarkup([['Codice a barre', 'Foto']], resize_keyboard=True)
@@ -44,11 +47,33 @@ no_keyboard = ReplyKeyboardRemove()
 """ Definition of the functions associated with the command handlers """
 
 
-def start(update: Update, _: CallbackContext) -> None:
+def start(update: Update, _: CallbackContext):
     """Send a message when the command /start is issued."""
-    update.message.reply_text(text=welcome_msg, reply_markup=standard_keyboard)
     user = update.message.from_user
-    db.add_user(user.id, user.first_name, user.last_name, user.username)
+    if (db.is_user(user.id)):
+        update.message.reply_text(text='Bentornato, ' + user.username, reply_markup=standard_keyboard)
+        return ConversationHandler.END
+    else:
+        # update.message.reply_text(text=welcome_msg, reply_markup=standard_keyboard)
+        db.add_user(user.id, user.first_name, user.last_name, user.username)
+
+        update.message.reply_text(text=tracking_msg, reply_markup=yesno_keyboard)
+
+        return TRACKING
+
+
+def track_away(update: Update, _:CallbackContext) -> int:
+    db.change_user_tracking(update.message.from_user.id, True)
+
+    update.message.reply_text("Bravo", reply_markup=standard_keyboard)
+    return ConversationHandler.END
+
+
+def dont_track(update: Update, _:CallbackContext) -> int:
+    db.change_user_tracking(update.message.from_user.id, False)
+
+    update.message.reply_text("mah", reply_markup=standard_keyboard)
+    return ConversationHandler.END
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
@@ -144,8 +169,20 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Command handlers
-    dispatcher.add_handler(CommandHandler('start', start))  # responds to the /start command
+    # dispatcher.add_handler(CommandHandler('start', start))  # responds to the /start command
     dispatcher.add_handler(CommandHandler('help', help_command))  # responds to the /help command
+
+    # User creation
+    dispatcher.add_handler(
+        ConversationHandler(
+            entry_points=[CommandHandler('start', start)],
+            states={
+                TRACKING: [MessageHandler(Filters.regex(re.compile(r'si$', re.IGNORECASE)), track_away),
+                            MessageHandler(Filters.regex(re.compile(r'no$', re.IGNORECASE)), dont_track)]
+            },
+            fallbacks=[]
+        )
+    )
 
     # Conversation handlers
     dispatcher.add_handler(

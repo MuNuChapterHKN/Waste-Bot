@@ -19,10 +19,16 @@ def _save_on_disk_():
 
 
 def is_user(userID: int) -> bool:
-    return userID in D.keys
+    return userID in D.keys()
 
 
 def add_user(userID: int, firstName: str, lastName: str, username: str):
     global D
-    D[userID] = {'firstname': firstName, 'lastname': lastName, 'username': username}
+    D[userID] = {'firstname': firstName, 'lastname': lastName, 'username': username, 'track': False}
+    _save_on_disk_()
+
+
+def change_user_tracking(userID: int, track: bool) -> None:
+    global D
+    D[userID]['track'] = track
     _save_on_disk_()
