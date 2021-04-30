@@ -9,6 +9,14 @@ import re
 # useless refactoring
 import db
 
+# need better solution
+from tempfile import NamedTemporaryFile
+
+# predicition function
+# from prediction import get_prediction
+from quickplagiarism import touch_of_code
+
+
 ### Enable logging ###
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)  # you will know when (and why) things don't work as expected
@@ -129,10 +137,24 @@ def reply_barcode(update: Update, _: CallbackContext) -> int:
 def reply_photo(update: Update, _: CallbackContext) -> int:
     """Sends a message in response to the photo"""
     # user = update.message.from_user
-    photo_file = update.message.photo[-1].get_file()
-    photo_file.download('user_photo.jpg')
+    photo = update.message.photo[-1]
+    photo_file = photo.get_file()
+    # get_prediction(photo_file.download_as_bytearray(), (photo.width, photo.height))
+
+    # an hack
+    my_temp_file = NamedTemporaryFile(suffix='.jpeg')
+    my_temp_path = my_temp_file.name
+    my_temp_file.close()
+
+    photo_file.download(my_temp_path)
+    # logger.info("Photo saved to %s e questa hack fa schifo", my_temp_path)
+
+    ans = touch_of_code(my_temp_path)
+
+    os.remove(my_temp_path)
     # logger.info("Photo of %s: %s", user.first_name, 'user_photo.jpg')
-    update.message.reply_text(text=easter_photo_msg, reply_markup=yesno_keyboard)
+    # update.message.reply_text(text=easter_photo_msg, reply_markup=yesno_keyboard)
+    update.message.reply_text(text="Hai inviato " + ans + ", giusto?", reply_markup=yesno_keyboard)
     return ANSWER
 
 
