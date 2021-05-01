@@ -9,7 +9,7 @@ if os.path.exists('database.csv'):
             D[int(line[0])] = ast.literal_eval(line[1])
 
 
-def _save_on_disk_():
+def _save_on_disk():
     global D
     file = open("database.csv", "w")
     for key, value in D.items():
@@ -25,10 +25,10 @@ def is_user(userID: int) -> bool:
 def add_user(userID: int, firstName: str, lastName: str, username: str):
     global D
     D[userID] = {'firstname': firstName, 'lastname': lastName, 'username': username, 'track': False}
-    _save_on_disk_()
+    _save_on_disk()
 
 
 def change_user_tracking(userID: int, track: bool) -> None:
     global D
     D[userID]['track'] = track
-    _save_on_disk_()
+    _save_on_disk()
