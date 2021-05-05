@@ -134,7 +134,8 @@ user_code.jpg
 user_photo.jpg
 temp.jpg
 
-
+# IDE files
+.idea
 
 # venv
 venv
