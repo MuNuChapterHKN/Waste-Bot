@@ -10,7 +10,7 @@ import re
 import db
 from common import *
 
-from coversations import *
+from conversations import *
 
 
 ### Enable logging ###
