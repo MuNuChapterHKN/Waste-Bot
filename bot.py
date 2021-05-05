@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
-import logging
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 import os
-import re
 
 # functions to access db data
 import db
@@ -13,10 +11,6 @@ from common import *
 from conversations import *
 
 
-### Enable logging ###
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)  # you will know when (and why) things don't work as expected
-logger = logging.getLogger(__name__)
 
 TOKEN = os.environ['TOKEN']
 # ADMIN_ID = os.environ['ADMIN_ID']
@@ -39,18 +33,17 @@ def echo(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(update.message.text, reply_markup=standard_keyboard)
 
 
-def unknown_command(update, context):
+def unknown_command(update: Update, _):
     """Send a message when an unknown command is issued."""
     update.message.reply_text(text=unknown_command_msg, reply_markup=standard_keyboard)
 
 
-def unknown_message(update, context):
+def unknown_message(update: Update, _):
     """Send a message when an unknown message is issued."""
     update.message.reply_text(text=unknown_message_msg, reply_markup=standard_keyboard)
 
 
 ### Conversation handler functions ###
-
 
 
 ### Main ###

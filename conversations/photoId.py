@@ -22,7 +22,6 @@ easter_barcode_msg = 'Questa BARCODE è di un uovo di Pasqua. È corretto?'
 
 # For both (atm)
 def last_reply(update: Update, _) -> int:
-    # user = update.message.from_user
     # logger.info("User location of %s", user.first_name)
     update.message.reply_text(text=waste_it_msg, reply_markup=standard_keyboard)
     return ConversationHandler.END

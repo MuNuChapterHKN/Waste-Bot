@@ -24,11 +24,17 @@ def is_user(userID: int) -> bool:
 
 def add_user(userID: int, firstName: str, lastName: str, username: str):
     global D
-    D[userID] = {'firstname': firstName, 'lastname': lastName, 'username': username, 'track': False}
+    D[userID] = {'firstname': firstName, 'lastname': lastName, 'username': username, 'track': False, 'sid': ""}
     _save_on_disk()
 
 
 def change_user_tracking(userID: int, track: bool) -> None:
     global D
     D[userID]['track'] = track
+    _save_on_disk()
+
+
+def change_user_studentid(userID: int, studentID: int) -> None:
+    global D
+    D[userID]['sid'] = studentID
     _save_on_disk()
