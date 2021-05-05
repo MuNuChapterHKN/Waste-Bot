@@ -128,5 +128,7 @@ print("Model Loading Completed")
 
 # A touch of code
 def touch_of_code(imagepath: str) -> str:
+    print("Started")
     img = Image.open(imagepath).resize((300, 300))
+    print("ended")
     return predictions(img)
