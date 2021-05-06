@@ -34,7 +34,7 @@ def do_track(update: Update, _) -> int:
 
 def identify(update: Update, _) -> int:
     db.change_user_studentid(update.message.from_user.id,
-                             re.findall(r's\d{6}', update.message.text))
+                             re.findall(r's\d{6}', update.message.text)[0])
     update.message.reply_text(f"Welcome aboard {update.message.from_user.name} {update.message.from_user.last_name}",
                               reply_markup=standard_keyboard)
     return ConversationHandler.END
