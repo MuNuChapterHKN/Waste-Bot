@@ -414,7 +414,7 @@ pytz = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "6ec7276830f0c235f2a103d7f3ab2b019923076bd4109271041432d1e9635ff5"
+content-hash = "24607c6c06a608bfbe1a632d2b0f529bbd4e6e887c7ca60e3efe915e99ae6d49"
 
 [metadata.files]
 albumentations = [

@@ -1,4 +1,4 @@
-from telegram import Update, ReplyKeyboardMarkup
+from telegram import Update
 from telegram.ext import CommandHandler, MessageHandler, Filters, ConversationHandler
 import re
 from tempfile import NamedTemporaryFile
@@ -27,7 +27,7 @@ def undo(update: Update, _) -> int:
     """Cancel the barcode or photo request"""
     # user = update.message.from_user
     # logger.info("User %s canceled the conversation.", user.first_name)
-    update.message.reply_text(text=undo_msg, reply_markup=standard_keyboard)
+    update.message.reply_text(text=undo_msg, reply_markup=standard_keyboard[lc(update)])
     return ConversationHandler.END
 
 
@@ -35,7 +35,7 @@ def invalid(update: Update, _) -> int:
     """Send a message when the entered text is invalid."""
     # user = update.message.from_user
     # logger.info("User %s canceled the conversation.", user.first_name)
-    update.message.reply_text(text=invalid_msg, reply_markup=standard_keyboard)
+    update.message.reply_text(text=invalid_msg, reply_markup=standard_keyboard[lc(update)])
     return ConversationHandler.END
 
 
@@ -43,17 +43,15 @@ def invalid(update: Update, _) -> int:
 def ask_photo(update: Update, _) -> int:
     """Send a message when the command /photo is issued asking for the photo of the object."""
     # user = update.message.from_user
-    # logger.info("Modalita scelta of %s: %s", user.first_name, update.message.text)
-    update.message.reply_text(text=ask_photo_msg, reply_markup=undo_keyboard)
+    # logger.info("Modalità scelta of %s: %s", user.first_name, update.message.text)
+    update.message.reply_text(text=ask_photo_msg, reply_markup=undo_keyboard[lc(update)])
     return PHOTOCODE
 
 
 def reply_photo(update: Update, _) -> int:
     """Sends a message in response to the photo"""
-    # user = update.message.from_user
     photo = update.message.photo[-1]
     photo_file = photo.get_file()
-    # get_prediction(photo_file.download_as_bytearray(), (photo.width, photo.height))
 
     # an hack
     my_temp_file = NamedTemporaryFile(suffix='.jpeg')
@@ -71,7 +69,7 @@ def reply_photo(update: Update, _) -> int:
     _photos_paths[update.message.from_user.id] = my_temp_path
 
     # logger.info("Photo of %s: %s", user.first_name, 'user_photo.jpg')
-    update.message.reply_text(text="Hai inviato " + ans + ", giusto?", reply_markup=yesno_keyboard)
+    update.message.reply_text(text="Hai inviato " + ans + ", giusto?", reply_markup=yesno_keyboard[lc(update)])
     return CORRECTNESS
 
 
@@ -79,12 +77,14 @@ def get_photo_feedback(update: Update, _) -> int:
     m = update.message.text
     pattern = re.compile('^si$', re.IGNORECASE)
     if re.findall(pattern, m):
-        update.message.reply_text(text="Bene!", reply_markup=standard_keyboard)
+        update.message.reply_text(text="Bene!", reply_markup=standard_keyboard[lc(update)])
         os.remove(_photos_paths[update.message.from_user.id])
         return ConversationHandler.END
     else:
-        update.message.reply_text(text="A quale categoria apparteneva l'oggeto?", reply_markup=category_keyboard)
+        update.message.reply_text(text="A quale categoria apparteneva l'oggetto?",
+                                  reply_markup=category_keyboard[lc(update)])
         return CATEGORIZATION
+
 
 def categorize(update: Update, _) -> int:
     res = re.findall(re.compile('(cardboard|glass|metal|paper|plastic|trash)'), update.message.text)[0]
@@ -94,7 +94,7 @@ def categorize(update: Update, _) -> int:
     del _photos_paths[update.message.from_user.id]
     db.save_fail(saved_path, res)
 
-    update.message.reply_text(text="Grazie per il feedback!", reply_markup=standard_keyboard)
+    update.message.reply_text(text="Grazie per il feedback!", reply_markup=standard_keyboard[lc(update)])
     return ConversationHandler.END
 
 
@@ -125,8 +125,8 @@ photoIdHandler = ConversationHandler(
 def ask_barcode(update: Update, _) -> int:
     """Send a message when the command /code is issued asking for the barcode photo."""
     # user = update.message.from_user
-    # logger.info("Modalita scelta of %s: %s", user.first_name, update.message.text)
-    update.message.reply_text(text=ask_barcode_msg, reply_markup=undo_keyboard)
+    # logger.info("Modalità scelta of %s: %s", user.first_name, update.message.text)
+    update.message.reply_text(text=ask_barcode_msg, reply_markup=undo_keyboard[lc(update)])
     return PHOTOCODE
 
 
@@ -136,14 +136,14 @@ def reply_barcode(update: Update, _) -> int:
     photo_file = update.message.photo[-1].get_file()
     photo_file.download('user_code.jpg')
     # logger.info("Codice of %s: %s", user.first_name, 'user_code.jpg')
-    update.message.reply_text(text=easter_barcode_msg, reply_markup=yesno_keyboard)
+    update.message.reply_text(text=easter_barcode_msg, reply_markup=yesno_keyboard[lc(update)])
     return CORRECTNESS
 
 
 # Only for the barcode
 def last_barcode_reply(update: Update, _) -> int:
     # logger.info("User location of %s", user.first_name)
-    update.message.reply_text(text=waste_it_msg, reply_markup=standard_keyboard)
+    update.message.reply_text(text=waste_it_msg, reply_markup=standard_keyboard[lc(update)])
     return ConversationHandler.END
 
 
@@ -162,5 +162,6 @@ barcodeHandler = ConversationHandler(
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
     },
     fallbacks=[CommandHandler('cancel', undo),
-               MessageHandler(Filters.regex(re.compile(r'^annulla$', re.IGNORECASE)), undo)],   # responds to the /cancel command or to the "Annulla" button
+               MessageHandler(Filters.regex(re.compile(r'^annulla$', re.IGNORECASE)), undo)],
+    allow_reentry=True,
 )

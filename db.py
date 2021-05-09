@@ -34,7 +34,7 @@ def change_user_tracking(userID: int, track: bool) -> None:
     _save_on_disk()
 
 
-def change_user_studentid(userID: int, studentID: int) -> None:
+def change_user_studentid(userID: int, studentID: str) -> None:
     global D
     D[userID]['sid'] = studentID
     _save_on_disk()

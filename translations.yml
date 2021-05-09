@@ -1,0 +1,38 @@
+# TODO: Add translations for all text
+en:
+  welcome back: Welcome back {username}
+  track question: Do you want to be tracked?
+  privacy settings: |
+    Again:
+    Do you want to be tracked?
+  student id question: What is your user id?
+  barcode: Barcode
+  photo: Photo
+  "yes": "Yes"
+  "no": "No"
+  cancel: Cancel
+  cardboard: Cardboard
+  glass: Glass
+  metal: Metal
+  paper: Paper
+  plastic: Plastic
+  trash: trash
+
+it:
+  welcome back: Bentornato {username}
+  track question: Vuoi abilitare il tracking?
+  privacy settings: |
+    Rieccoci:
+    Vuoi abilitare il tracking?
+  student id question: Qual'è la tua matricola?
+  barcode: Barcode
+  photo: Foto
+  "yes": "Sì"
+  "no": "No"
+  cancel: Annulla
+  cardboard: Cartone
+  glass: Vetro
+  metal: Metallo
+  paper: Paper
+  plastic: Plastica
+  trash: Trash

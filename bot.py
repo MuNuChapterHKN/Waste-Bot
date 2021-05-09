@@ -5,11 +5,10 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 import os
 
 # functions to access db data
-import db
+# import db
 from common import *
 
 from conversations import *
-
 
 
 TOKEN = os.environ['TOKEN']
@@ -25,28 +24,25 @@ unknown_message_msg = 'Mi dispiace, questa non è una risposta supportata al mom
 
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text(text=help_msg, reply_markup=standard_keyboard)
+    update.message.reply_text(text=help_msg, reply_markup=standard_keyboard[lc(update)])
 
 
 def echo(update: Update, _: CallbackContext) -> None:
     """Echo the user message."""
-    update.message.reply_text(update.message.text, reply_markup=standard_keyboard)
+    update.message.reply_text(update.message.text, reply_markup=standard_keyboard[lc(update)])
 
 
 def unknown_command(update: Update, _):
     """Send a message when an unknown command is issued."""
-    update.message.reply_text(text=unknown_command_msg, reply_markup=standard_keyboard)
+    update.message.reply_text(text=unknown_command_msg, reply_markup=standard_keyboard[lc(update)])
 
 
 def unknown_message(update: Update, _):
     """Send a message when an unknown message is issued."""
-    update.message.reply_text(text=unknown_message_msg, reply_markup=standard_keyboard)
+    update.message.reply_text(text=unknown_message_msg, reply_markup=standard_keyboard[lc(update)])
 
 
-### Conversation handler functions ###
-
-
-### Main ###
+# Main
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -55,14 +51,14 @@ def main() -> None:
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
 
-    # Command handlers
-    # dispatcher.add_handler(CommandHandler('start', start))  # responds to the /start command
-    dispatcher.add_handler(CommandHandler('help', help_command))  # responds to the /help command
-
     dispatcher.add_handler(newUserHandler)
     dispatcher.add_handler(newUserHandler)
     dispatcher.add_handler(photoIdHandler)
     dispatcher.add_handler(barcodeHandler)
+
+    # Command handlers
+    # dispatcher.add_handler(CommandHandler('start', start))  # responds to the /start command
+    dispatcher.add_handler(CommandHandler('help', help_command))  # responds to the /help command
 
     # Last handlers
     dispatcher.add_handler(MessageHandler(Filters.command, unknown_command))  # responds to any unknown command
