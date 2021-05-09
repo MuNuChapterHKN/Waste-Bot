@@ -75,10 +75,11 @@ def reply_photo(update: Update, _) -> int:
 
 def get_photo_feedback(update: Update, _) -> int:
     m = update.message.text
-    pattern = re.compile('^si$', re.IGNORECASE)
+    pattern = re.compile('^(si|yes)$', re.IGNORECASE)
     if re.findall(pattern, m):
         update.message.reply_text(text="Bene!", reply_markup=standard_keyboard[lc(update)])
         os.remove(_photos_paths[update.message.from_user.id])
+        del _photos_paths[update.message.from_user.id]
         return ConversationHandler.END
     else:
         update.message.reply_text(text="A quale categoria apparteneva l'oggetto?",
@@ -87,7 +88,7 @@ def get_photo_feedback(update: Update, _) -> int:
 
 
 def categorize(update: Update, _) -> int:
-    res = re.findall(re.compile('(cardboard|glass|metal|paper|plastic|trash)'), update.message.text)[0]
+    res = re.findall(re.compile('(cardboard|glass|metal|paper|plastic|trash|cartone|vetro|metallo|carta|plastica)', re.IGNORECASE), update.message.text)[0]
 
     os.remove(_photos_paths[update.message.from_user.id])   # TODO: move to saved photos folder
     saved_path = "mimmo"
@@ -100,23 +101,24 @@ def categorize(update: Update, _) -> int:
 
 photoIdHandler = ConversationHandler(
     entry_points=[CommandHandler('photo', ask_photo),
-                  MessageHandler(Filters.regex(re.compile(r'^foto$', re.IGNORECASE)), ask_photo)],
+                  MessageHandler(Filters.regex(re.compile(r'^(foto|photo)$', re.IGNORECASE)), ask_photo)],
     # responds to the /photo command or to the "Foto" button
     states={
         PHOTOCODE: [
             MessageHandler(Filters.photo, reply_photo),  # responds to the photo,
-            MessageHandler(Filters.regex(re.compile(r'^annulla$', re.IGNORECASE)), undo),
+            MessageHandler(Filters.regex(re.compile(r'^(annulla|cancel)$', re.IGNORECASE)), undo),
             # responds toto the "Annulla" button
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
         CORRECTNESS: [
-            MessageHandler(Filters.regex('^(Si|No)$'), get_photo_feedback),  # responds to the "Si|No" buttons
+            MessageHandler(Filters.regex('^(Si|No|Yes|No)$'), get_photo_feedback),  # responds to the "Si|No" buttons
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
         CATEGORIZATION: [
-            MessageHandler(Filters.regex('^(cardboard|glass|metal|paper|plastic|trash)$'), categorize)
+            MessageHandler(Filters.regex(re.compile('^(cardboard|glass|metal|paper|plastic|trash|cartone|vetro|metallo|carta|plastica)$', re.IGNORECASE)),
+                           categorize)
         ]
     },
     fallbacks=[CommandHandler('cancel', undo),
-               MessageHandler(Filters.regex(re.compile(r'^annulla$', re.IGNORECASE)), undo)],
+               MessageHandler(Filters.regex(re.compile(r'^(annulla|cancel)$', re.IGNORECASE)), undo)],
     # responds to the /cancel command or to the "Annulla" button
 )
 
@@ -149,19 +151,19 @@ def last_barcode_reply(update: Update, _) -> int:
 
 barcodeHandler = ConversationHandler(
     entry_points=[CommandHandler('code', ask_barcode),
-                  MessageHandler(Filters.regex(re.compile(r'^codice a barre$', re.IGNORECASE)), ask_barcode)],
+                  MessageHandler(Filters.regex(re.compile(r'^(codice a barre|barcode)$', re.IGNORECASE)), ask_barcode)],
     # responds to the /code command or to the "Codice a barre" button
     states={
         PHOTOCODE: [
             MessageHandler(Filters.photo, reply_barcode),  # responds to the photo,
-            MessageHandler(Filters.regex(re.compile(r'^annulla$', re.IGNORECASE)), undo),
+            MessageHandler(Filters.regex(re.compile(r'^(annulla|cancel)$', re.IGNORECASE)), undo),
             # responds toto the "Annulla" button
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
         CORRECTNESS: [
-            MessageHandler(Filters.regex('^(Si|No)$'), last_barcode_reply),  # responds to the "Si|No" buttons
+            MessageHandler(Filters.regex('^(Si|No|Yes|No)$'), last_barcode_reply),  # responds to the "Si|No" buttons
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
     },
     fallbacks=[CommandHandler('cancel', undo),
-               MessageHandler(Filters.regex(re.compile(r'^annulla$', re.IGNORECASE)), undo)],
+               MessageHandler(Filters.regex(re.compile(r'^(annulla|cancel)$', re.IGNORECASE)), undo)],
     allow_reentry=True,
 )

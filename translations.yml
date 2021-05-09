@@ -25,14 +25,14 @@ it:
     Rieccoci:
     Vuoi abilitare il tracking?
   student id question: Qual'è la tua matricola?
-  barcode: Barcode
+  barcode: Codice a barre
   photo: Foto
-  "yes": "Sì"
+  "yes": "Si"
   "no": "No"
   cancel: Annulla
   cardboard: Cartone
   glass: Vetro
   metal: Metallo
-  paper: Paper
+  paper: Carta
   plastic: Plastica
   trash: Trash

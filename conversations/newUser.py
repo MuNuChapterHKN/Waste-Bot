@@ -64,7 +64,7 @@ newUserHandler = ConversationHandler(
     entry_points=[CommandHandler('start', start),
                   CommandHandler('ps', privacy_settings), CommandHandler('privacySettings', privacy_settings)],
     states={
-        TRACKINGID: [MessageHandler(Filters.regex(re.compile(r'si$', re.IGNORECASE)), do_track),
+        TRACKINGID: [MessageHandler(Filters.regex(re.compile(r'(si|yes)$', re.IGNORECASE)), do_track),
                      MessageHandler(Filters.regex(re.compile(r'no$', re.IGNORECASE)), dont_track),
                      MessageHandler(Filters.all, trackingid_fallback)],
         STUDENTID: [MessageHandler(Filters.regex(re.compile(r's\d{6}', re.IGNORECASE)), identify),
