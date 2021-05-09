@@ -38,3 +38,7 @@ def change_user_studentid(userID: int, studentID: int) -> None:
     global D
     D[userID]['sid'] = studentID
     _save_on_disk()
+
+
+def save_fail(saved_path: str, res: str):
+    print(f"Add to a db {saved_path}: {res}")

@@ -8,8 +8,11 @@ import db
 from common import *
 from quickplagiarism import touch_of_code
 
-(PHOTOCODE, CORRECTNESS) = range(2)
+(PHOTOCODE, CORRECTNESS, CATEGORIZATION) = range(3)
 
+_photos_paths = dict()
+# Dictionary of userID -> file path, to keep track of photos before deleting them or
+# saving them if they are a fail
 
 undo_msg = 'Operazione annullata.'
 invalid_msg = 'Mi dispiace, non è una risposta valida. Operazione annullata'
@@ -18,13 +21,6 @@ waste_it_msg = 'Yeah! Allora buttalo nell\'indifferenziato, a presto!'
 ask_barcode_msg = 'Perfetto! Inviami la foto del CODICE a barre. Premi "Annulla" se vuoi interrompere la conversazione.'
 easter_photo_msg = 'Questa FOTO è di un uovo di Pasqua. È corretto?'
 easter_barcode_msg = 'Questa BARCODE è di un uovo di Pasqua. È corretto?'
-
-
-# For both (atm)
-def last_reply(update: Update, _) -> int:
-    # logger.info("User location of %s", user.first_name)
-    update.message.reply_text(text=waste_it_msg, reply_markup=standard_keyboard)
-    return ConversationHandler.END
 
 
 def undo(update: Update, _) -> int:
@@ -69,11 +65,37 @@ def reply_photo(update: Update, _) -> int:
 
     ans = touch_of_code(my_temp_path)
 
-    os.remove(my_temp_path)
+    uid = update.message.from_user.id
+    if uid in _photos_paths:
+        os.remove(_photos_paths[uid])
+    _photos_paths[update.message.from_user.id] = my_temp_path
+
     # logger.info("Photo of %s: %s", user.first_name, 'user_photo.jpg')
-    # update.message.reply_text(text=easter_photo_msg, reply_markup=yesno_keyboard)
     update.message.reply_text(text="Hai inviato " + ans + ", giusto?", reply_markup=yesno_keyboard)
     return CORRECTNESS
+
+
+def get_photo_feedback(update: Update, _) -> int:
+    m = update.message.text
+    pattern = re.compile('^si$', re.IGNORECASE)
+    if re.findall(pattern, m):
+        update.message.reply_text(text="Bene!", reply_markup=standard_keyboard)
+        os.remove(_photos_paths[update.message.from_user.id])
+        return ConversationHandler.END
+    else:
+        update.message.reply_text(text="A quale categoria apparteneva l'oggeto?", reply_markup=category_keyboard)
+        return CATEGORIZATION
+
+def categorize(update: Update, _) -> int:
+    res = re.findall(re.compile('(cardboard|glass|metal|paper|plastic|trash)'), update.message.text)[0]
+
+    os.remove(_photos_paths[update.message.from_user.id])   # TODO: move to saved photos folder
+    saved_path = "mimmo"
+    del _photos_paths[update.message.from_user.id]
+    db.save_fail(saved_path, res)
+
+    update.message.reply_text(text="Grazie per il feedback!", reply_markup=standard_keyboard)
+    return ConversationHandler.END
 
 
 photoIdHandler = ConversationHandler(
@@ -87,8 +109,11 @@ photoIdHandler = ConversationHandler(
             # responds toto the "Annulla" button
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
         CORRECTNESS: [
-            MessageHandler(Filters.regex('^(Si|No)$'), last_reply),  # responds to the "Si|No" buttons
+            MessageHandler(Filters.regex('^(Si|No)$'), get_photo_feedback),  # responds to the "Si|No" buttons
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
+        CATEGORIZATION: [
+            MessageHandler(Filters.regex('^(cardboard|glass|metal|paper|plastic|trash)$'), categorize)
+        ]
     },
     fallbacks=[CommandHandler('cancel', undo),
                MessageHandler(Filters.regex(re.compile(r'^annulla$', re.IGNORECASE)), undo)],
@@ -115,6 +140,13 @@ def reply_barcode(update: Update, _) -> int:
     return CORRECTNESS
 
 
+# Only for the barcode
+def last_barcode_reply(update: Update, _) -> int:
+    # logger.info("User location of %s", user.first_name)
+    update.message.reply_text(text=waste_it_msg, reply_markup=standard_keyboard)
+    return ConversationHandler.END
+
+
 barcodeHandler = ConversationHandler(
     entry_points=[CommandHandler('code', ask_barcode),
                   MessageHandler(Filters.regex(re.compile(r'^codice a barre$', re.IGNORECASE)), ask_barcode)],
@@ -126,7 +158,7 @@ barcodeHandler = ConversationHandler(
             # responds toto the "Annulla" button
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
         CORRECTNESS: [
-            MessageHandler(Filters.regex('^(Si|No)$'), last_reply),  # responds to the "Si|No" buttons
+            MessageHandler(Filters.regex('^(Si|No)$'), last_barcode_reply),  # responds to the "Si|No" buttons
             MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
     },
     fallbacks=[CommandHandler('cancel', undo),
