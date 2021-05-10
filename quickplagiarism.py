@@ -1,4 +1,3 @@
-
 # imports
 import os
 import numpy as np
@@ -21,11 +20,12 @@ from efficientnet_pytorch import EfficientNet
 from PIL import Image
 
 import warnings
+
 warnings.filterwarnings('ignore')
 
 # Constants
 IMG_SIZE = 300
-CATEGORIES = ["cardboard","glass","metal","paper","plastic","trash"]
+CATEGORIES = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
 
 
 # classes

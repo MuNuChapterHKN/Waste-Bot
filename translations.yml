@@ -1,0 +1,95 @@
+en:
+  invalid msg: Invalid message
+  unknown command: Unknown command
+  help: |
+    Supported commands:
+    /start
+    /photo  Identify a photo
+    /code   Indentify a barcode
+    /ps     Change your privacy settings
+
+  # New user conversation
+  welcome back: Welcome back {username}
+  track question: Do you want to be tracked?
+  privacy settings: |
+    Again:
+    Do you want to be tracked?
+  student id question: What is your user id?
+  welcome aboard: Welcome aboard {username}
+  id fail: This is id is not valid. Try again.
+  not tracking: As you asked I'm now not tracking you.
+  invalid yes or no: Answer yes or no
+
+  # Photo id conversation
+  canceled: Operation canceled
+  invalid message canceled: Invalid messaged. Operation canceled
+  ask photo: Send me a photo of the item
+  identified photo: You sent a photo of {label}, am I right?
+  success: Good!
+  category question: What's the category of the item?
+  feedback thanks: Thank you for your feedback
+  ask barcode: Send me a photo of the barcode
+  identified barcode: It's a mimmo. It goes in the {label}.
+
+  # Keyboards
+  barcode: Barcode
+  photo: Photo
+  "yes": "Yes"
+  "no": "No"
+  cancel: Cancel
+
+  # Photo categories labels
+  cardboard: Cardboard
+  glass: Glass
+  metal: Metal
+  paper: Paper
+  plastic: Plastic
+  trash: Trash
+
+it:
+  invalid msg: Messaggio non valido
+  unknown command: Comando sconosciuto
+  help: |
+    Comandi supportati:
+    /start
+    /photo  Riconosci una foto
+    /code   Riconosci un codice a barre
+    /ps     Cambia le tue impostazioni di privacy
+
+  # New user conversation
+  welcome back: Bentornato {username}
+  track question: Vuoi abilitare il tracking?
+  privacy settings: |
+    Rieccoci:
+    Vuoi abilitare il tracking?
+  student id question: Qual'è la tua matricola?
+  welcome aboard: Benvenuto {username}
+  id fail: Questa matricola non è valida. Prova di nuovo
+  not tracking: Come richiesto il tracking è disabilitato
+  invalid yes or no: Rispondi sì o no
+
+  # Photo id conversation
+  canceled: Operazione annulata
+  invalid message canceled: Messagio non valido. Operazione annullata.
+  ask photo: Inviami una foto dell'oggetto
+  identified photo: Hai inviato una foto di {label}, giusto?
+  success: Bene!
+  category question: Cosa avrei dovuto rispondere?
+  feedback thanks: Grazie per il feedback.
+  ask barcode: Invia una foto del codice a barre.
+  identified barcode: Questo plumbus va nella {label}.
+
+  # Keyboards
+  barcode: Codice a barre
+  photo: Foto
+  "yes": "Sì"
+  "no": "No"
+  cancel: Annulla
+
+  # Photo categories labels
+  cardboard: Cartone
+  glass: Vetro
+  metal: Metallo
+  paper: Carta
+  plastic: Plastica
+  trash: Trash

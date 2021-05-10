@@ -12,6 +12,7 @@ efficientnet-pytorch = "^0.7.1"
 pandas = "^1.2.4"
 Pillow = "^8.2.0"
 torchvision = "^0.9.1"
+PyYAML = "^5.4.1"
 
 [tool.poetry.dev-dependencies]
 
