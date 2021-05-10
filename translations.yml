@@ -9,6 +9,7 @@ en:
     /ps     Change your privacy settings
 
   # New user conversation
+  welcome: Welcome {username}. Do you want to enable tracking?
   welcome back: Welcome back {username}
   track question: Do you want to be tracked?
   privacy settings: |
@@ -69,6 +70,7 @@ it:
   invalid yes or no: Rispondi sì o no
 
   # Photo id conversation
+  welcome: Benvenuto {username}. Vuoi abilitare il tracking?
   canceled: Operazione annulata
   invalid message canceled: Messagio non valido. Operazione annullata.
   ask photo: Inviami una foto dell'oggetto

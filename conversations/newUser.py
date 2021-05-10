@@ -16,7 +16,7 @@ def start(update: Update, _) -> int:
         return ConversationHandler.END
 
     db.add_user(u.id, u.first_name, u.last_name, u.username)
-    update.message.reply_text(t('welcome back', username=u.username, locale=lc(update)), reply_markup=yesno_keyboard[lc(update)])
+    update.message.reply_text(t('welcome', username=u.username, locale=lc(update)), reply_markup=yesno_keyboard[lc(update)])
     return TRACKINGID
 
 
