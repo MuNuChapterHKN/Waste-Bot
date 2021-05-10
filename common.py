@@ -46,7 +46,7 @@ def lc(update: telegram.Update):
 
 
 # Believe me it works and it's idiomatic even though it's unreadable
-def _multilang_keyboard(butts: list[list[str]]):
+def _multilang_keyboard(butts):
     return {k: ReplyKeyboardMarkup([[t(text, locale=k) for text in buttonrow]
                                     for buttonrow in butts], resize_keyboard=True)
             for k in _transdict.keys()}

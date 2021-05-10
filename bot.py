@@ -15,13 +15,6 @@ TOKEN = os.environ['TOKEN']
 # ADMIN_ID = os.environ['ADMIN_ID']
 
 
-### Messages ###
-help_msg = 'Comandi supportati:\n- \\start\n- \\help'
-photo_msg = 'Perfetto! Inviami la foto dell\'oggetto.'
-unknown_command_msg = 'Mi dispiace, questo non è un comando supportato.'
-unknown_message_msg = 'Mi dispiace, questa non è una risposta supportata al momento.'
-
-
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(t('help', locale=lc(update)), reply_markup=standard_keyboard[lc(update)])
