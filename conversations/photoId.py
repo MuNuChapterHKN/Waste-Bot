@@ -14,14 +14,6 @@ _photos_paths = dict()
 # Dictionary of userID -> file path, to keep track of photos before deleting them or
 # saving them if they are a fail
 
-undo_msg = 'Operazione annullata.'
-invalid_msg = 'Mi dispiace, non è una risposta valida. Operazione annullata'
-ask_photo_msg = 'Perfetto! Inviami la FOTO dell\'oggetto. Premi "Annulla" se vuoi interrompere la conversazione.'
-waste_it_msg = 'Yeah! Allora buttalo nell\'indifferenziato, a presto!'
-ask_barcode_msg = 'Perfetto! Inviami la foto del CODICE a barre. Premi "Annulla" se vuoi interrompere la conversazione.'
-easter_photo_msg = 'Questa FOTO è di un uovo di Pasqua. È corretto?'
-easter_barcode_msg = 'Questa BARCODE è di un uovo di Pasqua. È corretto?'
-
 
 def undo(update: Update, _) -> int:
     """Cancel the barcode or photo request"""
@@ -76,7 +68,7 @@ def reply_photo(update: Update, _) -> int:
 
 def get_photo_feedback(update: Update, _) -> int:
     m = update.message.text
-    pattern = match_translations('yes', extras='si')
+    pattern = match_translations('yes', extras=['si'])
     if re.findall(pattern, m):
         update.message.reply_text(t('success', locale=lc(update)), reply_markup=standard_keyboard[lc(update)])
         os.remove(_photos_paths[update.message.from_user.id])
