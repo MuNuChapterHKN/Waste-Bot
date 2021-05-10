@@ -1,14 +1,11 @@
+import re
+
 import telegram
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import logging
 import yaml
 
-# standard_keyboard = ReplyKeyboardMarkup([['Codice a barre', 'Foto']], resize_keyboard=True)
-# yesno_keyboard = ReplyKeyboardMarkup([['Si', 'No']], resize_keyboard=True)
-# undo_keyboard = ReplyKeyboardMarkup([['Annulla']], resize_keyboard=True)
-# no_keyboard = ReplyKeyboardRemove()
-# category_keyboard = ReplyKeyboardMarkup([['cardboard', 'glass', 'metal'], ['paper', 'plastic', 'trash']],
-#                                         resize_keyboard=False)
+from quickplagiarism import CATEGORIES
 
 ### Global logger ###
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -60,3 +57,33 @@ yesno_keyboard = _multilang_keyboard([['yes', 'no']])
 undo_keyboard = _multilang_keyboard([['cancel']])
 category_keyboard = _multilang_keyboard([['cardboard', 'glass', 'metal'], ['paper', 'plastic', 'trash']])
 no_keyboard = ReplyKeyboardRemove()
+
+_reverse_category = {_transdict[lc][c].upper(): c for lc in _transdict.keys() for c in CATEGORIES}
+
+
+def category_from_translation(translation: str) -> str:
+    return _reverse_category[translation.upper()]
+
+
+def match_translations(*keys: str, extras=None) -> re.Pattern:
+    """
+    Generates a regex patter that matches all the translations for the provided keys
+
+    Args:
+        *keys: keys in the translations file as unnamed parameters
+        extras: list of strings to be matched in addition to the translations
+
+    Returns: regex pattern wanted
+
+    """
+    if extras is None:
+        extras = []
+    translations = [_transdict[l][key] for l in _transdict.keys() for key in keys]
+    translations += extras
+
+    reg = "^(" + translations[0]
+    for tran in translations[1:]:
+        reg += "|" + tran
+    reg += ")$"
+
+    return re.compile(reg, re.IGNORECASE)

@@ -16,7 +16,7 @@ def start(update: Update, _) -> int:
         return ConversationHandler.END
 
     db.add_user(u.id, u.first_name, u.last_name, u.username)
-    update.message.reply_text(text="Do you want to be tracked?", reply_markup=yesno_keyboard[lc(update)])
+    update.message.reply_text(t('welcome back', username=u.username, locale=lc(update)), reply_markup=yesno_keyboard[lc(update)])
     return TRACKINGID
 
 
@@ -36,19 +36,19 @@ def do_track(update: Update, _) -> int:
 def identify(update: Update, _) -> int:
     db.change_user_studentid(update.message.from_user.id,
                              re.findall(r's\d{6}', update.message.text)[0])
-    update.message.reply_text(f"Welcome aboard {update.message.from_user.name} {update.message.from_user.last_name}",
+    update.message.reply_text(t('welcome aboard', username=update.message.from_user.username, locale=lc(update)),
                               reply_markup=standard_keyboard[lc(update)])
     return ConversationHandler.END
 
 
 def id_fail(update: Update, _) -> int:
-    update.message.reply_text(text="The id is not valid, try again")
+    update.message.reply_text(t('id fail', locale=lc(update)))
 
     return STUDENTID
 
 
 def dont_track(update: Update, _) -> int:
-    update.message.reply_text("Ok, do as you wish", reply_markup=standard_keyboard[lc(update)])
+    update.message.reply_text(t('not tracking', locale=lc(update)), reply_markup=standard_keyboard[lc(update)])
     db.change_user_tracking(update.message.from_user.id, False)
     db.change_user_studentid(update.message.from_user.id, "")
 
@@ -56,7 +56,7 @@ def dont_track(update: Update, _) -> int:
 
 
 def trackingid_fallback(update: Update, _) -> int:
-    update.message.reply_text("Answer yes or no", reply_markup=standard_keyboard[lc(update)])
+    update.message.reply_text(t('invalid yes or no', locale=lc(update)), reply_markup=yesno_keyboard[lc(update)])
     return TRACKINGID
 
 
@@ -64,8 +64,8 @@ newUserHandler = ConversationHandler(
     entry_points=[CommandHandler('start', start),
                   CommandHandler('ps', privacy_settings), CommandHandler('privacySettings', privacy_settings)],
     states={
-        TRACKINGID: [MessageHandler(Filters.regex(re.compile(r'(si|yes)$', re.IGNORECASE)), do_track),
-                     MessageHandler(Filters.regex(re.compile(r'no$', re.IGNORECASE)), dont_track),
+        TRACKINGID: [MessageHandler(Filters.regex(match_translations('yes', extras='si')), do_track),
+                     MessageHandler(Filters.regex(match_translations('no')), dont_track),
                      MessageHandler(Filters.all, trackingid_fallback)],
         STUDENTID: [MessageHandler(Filters.regex(re.compile(r's\d{6}', re.IGNORECASE)), identify),
                     MessageHandler(Filters.all, id_fail),

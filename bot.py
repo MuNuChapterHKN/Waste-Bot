@@ -24,22 +24,17 @@ unknown_message_msg = 'Mi dispiace, questa non è una risposta supportata al mom
 
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text(text=help_msg, reply_markup=standard_keyboard[lc(update)])
-
-
-def echo(update: Update, _: CallbackContext) -> None:
-    """Echo the user message."""
-    update.message.reply_text(update.message.text, reply_markup=standard_keyboard[lc(update)])
+    update.message.reply_text(t('help', locale=lc(update)), reply_markup=standard_keyboard[lc(update)])
 
 
 def unknown_command(update: Update, _):
     """Send a message when an unknown command is issued."""
-    update.message.reply_text(text=unknown_command_msg, reply_markup=standard_keyboard[lc(update)])
+    update.message.reply_text(text=t('unknown command', locale=lc(update)), reply_markup=standard_keyboard[lc(update)])
 
 
 def unknown_message(update: Update, _):
     """Send a message when an unknown message is issued."""
-    update.message.reply_text(text=unknown_message_msg, reply_markup=standard_keyboard[lc(update)])
+    update.message.reply_text(text=t('invalid msg', locale=lc(update)), reply_markup=standard_keyboard[lc(update)])
 
 
 # Main
