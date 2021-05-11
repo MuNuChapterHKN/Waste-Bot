@@ -99,21 +99,15 @@ photoIdHandler = ConversationHandler(
     # responds to the /photo command or to the "Foto" button
     states={
         PHOTOCODE: [
-            MessageHandler(Filters.photo, reply_photo),  # responds to the photo,
-            MessageHandler(Filters.regex(match_translations('cancel')), undo),
-            # responds toto the "Annulla" button
-            MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
+            MessageHandler(Filters.photo, reply_photo)],  # responds to the photo,
         CORRECTNESS: [
-            MessageHandler(Filters.regex(match_translations('yes', 'no', extras='si')), get_photo_feedback),  # responds to the "Si|No" buttons
-            MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
+            MessageHandler(Filters.regex(match_translations('yes', 'no', extras='si')), get_photo_feedback)],  # responds to the "Si|No" buttons
         CATEGORIZATION: [
-            MessageHandler(Filters.regex(match_translations('cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash')),
-                           categorize)
-        ]
+            MessageHandler(Filters.regex(match_translations('cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash')), categorize)],
     },
     fallbacks=[CommandHandler('cancel', undo),
-               MessageHandler(Filters.regex(match_translations('cancel')), undo)],
-    # responds to the /cancel command or to the "Annulla" button
+               MessageHandler(Filters.regex(match_translations('cancel')), undo),           # responds to the /cancel command or to the "Annulla" button
+               MessageHandler(Filters.text | Filters.command, invalid)],
 )
 
 
@@ -149,15 +143,12 @@ barcodeHandler = ConversationHandler(
     # responds to the /code command or to the "Codice a barre" button
     states={
         PHOTOCODE: [
-            MessageHandler(Filters.photo, reply_barcode),  # responds to the photo,
-            MessageHandler(Filters.regex(match_translations('cancel')), undo),
-            # responds toto the "Annulla" button
-            MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
+            MessageHandler(Filters.photo, reply_barcode)],  # responds to the photo,
         CORRECTNESS: [
-            MessageHandler(Filters.regex(match_translations('yes', 'no', extras='si')), last_barcode_reply),  # responds to the "Si|No" buttons
-            MessageHandler(Filters.text & ~Filters.command, invalid)],  # responds to invalid messages
+            MessageHandler(Filters.regex(match_translations('yes', 'no', extras='si')), last_barcode_reply)]  # responds to the "Si|No" buttons
     },
     fallbacks=[CommandHandler('cancel', undo),
-               MessageHandler(Filters.regex(match_translations('cancel')), undo)],
+               MessageHandler(Filters.regex(match_translations('cancel')), undo),
+               MessageHandler(Filters.text | Filters.command, invalid)],
     allow_reentry=True,
 )
