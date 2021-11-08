@@ -6,9 +6,8 @@ import os
 
 # functions to access db data
 # import db
-from common import *
-
-from conversations import *
+from common import t, lc, standard_keyboard
+from conversations import newUserHandler, photoIdHandler, barcodeHandler
 
 
 TOKEN = os.environ['TOKEN']

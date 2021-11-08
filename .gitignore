@@ -139,3 +139,5 @@ temp.jpg
 
 # venv
 venv
+
+*.png
