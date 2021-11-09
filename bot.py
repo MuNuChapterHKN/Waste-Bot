@@ -4,8 +4,8 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 import os
 
-# functions to access db data
-# import db
+from database.database import Base, engine
+
 from common import t, lc, standard_keyboard
 from conversations import newUserHandler, photoIdHandler, barcodeHandler
 
@@ -31,6 +31,8 @@ def unknown_message(update: Update, _):
 
 # Main
 def main() -> None:
+    Base.metadata.create_all(bind=engine)
+
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     updater = Updater(TOKEN)

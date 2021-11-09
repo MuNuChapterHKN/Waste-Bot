@@ -141,3 +141,5 @@ temp.jpg
 venv
 
 *.png
+*.db
+.vscode/

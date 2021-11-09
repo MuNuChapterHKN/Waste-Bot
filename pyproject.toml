@@ -8,6 +8,8 @@ authors = ["hkn"]
 python = "^3.8"
 python-telegram-bot = "^13.5"
 PyYAML = "^5.4.1"
+SQLAlchemy = "^1.4.26"
+psycopg2 = "^2.9.1"
 
 [tool.poetry.dev-dependencies]
 
