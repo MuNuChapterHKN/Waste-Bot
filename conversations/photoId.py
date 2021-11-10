@@ -4,8 +4,8 @@ import re
 from tempfile import NamedTemporaryFile
 import os
 
-import db
-from common import *
+# import db
+from common import lc, standard_keyboard, yesno_keyboard, undo_keyboard, category_keyboard, match_translations
 from quickplagiarism import touch_of_code
 
 (PHOTOCODE, CORRECTNESS, CATEGORIZATION) = range(3)

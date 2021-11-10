@@ -9,21 +9,24 @@ def is_user(user_id: int) -> bool:
         return session.query(m.User).filter(m.User.id == user_id).count() > 0
 
     
-def add_user(user_id: int, username: str):
-    with SessionLocal() as session:
-        session.add(m.User(id=user_id, username=username))
-        session.commit()
-
-
-def change_user_tracking(user_id: int, tracking: bool):
-    with SessionLocal() as session:
-        user  = session.query(m.User).filter(m.User.id == user_id).first()
-        user.tracking = tracking
-        session.commit()
-
-
 def change_user_studentid(user_id: int, studentid: str):
     with SessionLocal() as session:
         user = session.query(m.User).filter(m.User.id == user_id).first()
         user.studentid = studentid
+        session.commit()
+
+
+def user_enable_tracking(user_id: int, studentid: str):
+    with SessionLocal() as session:
+        user = session.query(m.User).filter(m.User.id == user_id).first()
+        user.tracking = True
+        user.studentid = studentid
+        session.commit()
+
+
+def user_disable_tracking(user_id: int):
+    with SessionLocal() as session:
+        user = session.query(m.User).filter(m.User.id == user_id).first()
+        user.tracking = False
+        user.username = None
         session.commit()
