@@ -63,6 +63,7 @@ def main() -> None:
         # updater.bot.setWebhook(WEBHOOK_URI + TOKEN)
         updater.start_webhook(listen="0.0.0.0",
             port=PORT,
+            url_path=TOKEN,
             webhook_url=WEBHOOK_URI+TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
