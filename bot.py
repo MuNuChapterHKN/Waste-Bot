@@ -59,7 +59,6 @@ def main() -> None:
     # Start the Bot
     if WEBHOOK_URI is None:
         updater.start_polling()
-        updater.idle()
     else:
         # updater.bot.setWebhook(WEBHOOK_URI + TOKEN)
         updater.start_webhook(listen="0.0.0.0",
@@ -69,6 +68,7 @@ def main() -> None:
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
+    updater.idle()
 
 
 if __name__ == '__main__':
