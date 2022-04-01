@@ -8,6 +8,12 @@ def is_user(user_id: int) -> bool:
     with SessionLocal() as session:
         return session.query(m.User).filter(m.User.id == user_id).count() > 0
 
+
+def add_user(user_id: int):
+     with SessionLocal() as session:
+         session.add(m.User(id=user_id))
+         session.commit()
+
     
 def change_user_studentid(user_id: int, studentid: str):
     with SessionLocal() as session:

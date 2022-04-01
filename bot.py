@@ -12,6 +12,7 @@ from conversations import newUserHandler, photoIdHandler, barcodeHandler
 
 TOKEN = os.environ['TOKEN']
 # ADMIN_ID = os.environ['ADMIN_ID']
+WEBHOOK_URI = os.getenv('WEBHOOK_URL')
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
@@ -55,7 +56,10 @@ def main() -> None:
         MessageHandler(Filters.text & ~Filters.command, unknown_message))  # responds to any unknown message
 
     # Start the Bot
-    updater.start_polling()
+    if WEBHOOK_URI is None:
+        updater.start_polling()
+    else:
+        updater.bot.setWebhook(WEBHOOK_URI + TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since

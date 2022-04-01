@@ -41,7 +41,7 @@ def t(key: str, locale: str, **fields) -> str:
 
 
 def lc(update: telegram.Update):
-    """Returns the language code of the user that sent the message. Often user in conjunction with t"""
+    """Returns the language code of the user that sent the message. Often used in conjunction with t"""
     return update.message.from_user.language_code
 
 
