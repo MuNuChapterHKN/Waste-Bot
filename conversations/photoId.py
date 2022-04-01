@@ -4,8 +4,10 @@ import re
 from tempfile import NamedTemporaryFile
 import os
 
-import db
-from common import *
+from common import t
+
+# import db
+from common import lc, standard_keyboard, yesno_keyboard, undo_keyboard, category_keyboard, match_translations
 from quickplagiarism import touch_of_code
 
 (PHOTOCODE, CORRECTNESS, CATEGORIZATION) = range(3)
@@ -87,7 +89,7 @@ def categorize(update: Update, _) -> int:
     os.remove(_photos_paths[update.message.from_user.id])   # TODO: move to saved photos folder
     saved_path = "mimmo"
     del _photos_paths[update.message.from_user.id]
-    db.save_fail(saved_path, category_from_translation(res))
+    # db.save_fail(saved_path, category_from_translation(res))
 
     update.message.reply_text(t('feedback thanks', locale=lc(update)), reply_markup=standard_keyboard[lc(update)])
     return ConversationHandler.END

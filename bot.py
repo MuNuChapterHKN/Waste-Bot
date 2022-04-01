@@ -4,15 +4,16 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 import os
 
-# functions to access db data
-# import db
-from common import *
+from database.database import Base, engine
 
-from conversations import *
+from common import t, lc, standard_keyboard
+from conversations import newUserHandler, photoIdHandler, barcodeHandler
 
 
 TOKEN = os.environ['TOKEN']
 # ADMIN_ID = os.environ['ADMIN_ID']
+WEBHOOK_URI = os.getenv('WEBHOOK_URL')
+PORT = os.getenv("PORT")
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
@@ -32,6 +33,8 @@ def unknown_message(update: Update, _):
 
 # Main
 def main() -> None:
+    Base.metadata.create_all(bind=engine)
+
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     updater = Updater(TOKEN)
@@ -54,7 +57,14 @@ def main() -> None:
         MessageHandler(Filters.text & ~Filters.command, unknown_message))  # responds to any unknown message
 
     # Start the Bot
-    updater.start_polling()
+    if WEBHOOK_URI is None:
+        updater.start_polling()
+    else:
+        # updater.bot.setWebhook(WEBHOOK_URI + TOKEN)
+        updater.start_webhook(listen="0.0.0.0",
+            port=PORT,
+            url_path=TOKEN,
+            webhook_url=WEBHOOK_URI+TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
