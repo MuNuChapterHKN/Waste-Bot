@@ -13,6 +13,7 @@ from conversations import newUserHandler, photoIdHandler, barcodeHandler
 TOKEN = os.environ['TOKEN']
 # ADMIN_ID = os.environ['ADMIN_ID']
 WEBHOOK_URI = os.getenv('WEBHOOK_URL')
+PORT = os.getenv("PORT")
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
@@ -58,13 +59,17 @@ def main() -> None:
     # Start the Bot
     if WEBHOOK_URI is None:
         updater.start_polling()
+        updater.idle()
     else:
-        updater.bot.setWebhook(WEBHOOK_URI + TOKEN)
+        # updater.bot.setWebhook(WEBHOOK_URI + TOKEN)
+        updater.start_webhook(listen="0.0.0.0",
+            port=PORT,
+            url_path=TOKEN,
+            webhook_url=WEBHOOK_URI)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
 
 
 if __name__ == '__main__':
