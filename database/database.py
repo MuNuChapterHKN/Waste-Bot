@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 
-SQLALCHEMY_DATABASE_URL =  os.environ.get('DATABASE_URL')
+SQLALCHEMY_DATABASE_URL = "postgresql://" + os.environ.get('DATABASE_URL').split("://")[1]
 echo = os.environ.get('DATABASE_LOGGING') == 'True'
 
 engine = create_engine(
