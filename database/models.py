@@ -9,3 +9,5 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     tracking = Column(Boolean, default=False, nullable=False)
+
+    studentid = Column(String(7), nullable=True)
