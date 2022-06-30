@@ -82,4 +82,4 @@ def match_translations(*keys: str, extras=None) -> re.Pattern:
     translations += extras
 
     # Concatenate all the translations into one regex pattern
-    return re.compile("^(" + "|".join([_transdict[l][key] for l in _transdict.keys() for key in keys]) + ")$", re.IGNORECASE)
+    return re.compile("^(" + "|".join(translations) + ")$", re.IGNORECASE)
