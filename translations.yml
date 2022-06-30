@@ -15,9 +15,7 @@ en:
   privacy settings: |
     Again:
     Do you want to be tracked?
-  student id question: What is your user id?
   welcome aboard: Welcome aboard {username}
-  id fail: This is id is not valid. Try again.
   not tracking: As you asked I'm now not tracking you.
   invalid yes or no: Answer yes or no
 
@@ -58,19 +56,20 @@ it:
     /ps     Cambia le tue impostazioni di privacy
 
   # New user conversation
-  welcome back: Bentornato {username}
+  welcome: |
+    Benvenutə {username} su WasteBot di Threekeco! Ti sarò utile per imparare a fare la raccolta differenziata e mi aiuterai anche ad allenare il mio algoritmo! 🦾
+    Se vuoi partecipare al Gioco a punti abbiamo bisogno di attivare il tracking. Ci dai il consenso?
   track question: Vuoi abilitare il tracking?
+  not tracking: Come richiesto il tracking è disabilitato
+  invalid yes or no: Rispondi sì o no
+  welcome aboard: Ora sei dei nostri 💪
+
+  welcome back: Bentoranto su WasteBot!
   privacy settings: |
     Rieccoci:
     Vuoi abilitare il tracking?
-  student id question: Qual'è la tua matricola?
-  welcome aboard: Benvenuto {username}
-  id fail: Questa matricola non è valida. Prova di nuovo
-  not tracking: Come richiesto il tracking è disabilitato
-  invalid yes or no: Rispondi sì o no
 
   # Photo id conversation
-  welcome: Benvenuto {username}. Vuoi abilitare il tracking?
   canceled: Operazione annulata
   invalid message canceled: Messagio non valido. Operazione annullata.
   ask photo: Inviami una foto dell'oggetto
